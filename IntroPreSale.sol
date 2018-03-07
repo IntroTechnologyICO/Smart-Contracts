@@ -1,6 +1,6 @@
 pragma solidity ^0.4.16;
 
-interface IntroCoin {
+interface IntroToken {
     function transfer(address receiver, uint amount);
 }
 
@@ -67,7 +67,7 @@ contract IntroCrowdsale is Ownable {
     address public investWallet1 = 0x8503AAb7e9178174847302d6D06af5fbfEfcf444; //Кошелек для хранения присланных эфиров
     address public investWallet2 = 0x8503AAb7e9178174847302d6D06af5fbfEfcf444; //Кошелек для хранения присланных эфиров
     address public investWallet3 = 0x8503AAb7e9178174847302d6D06af5fbfEfcf444; //Кошелек для хранения присланных эфиров
-    IntroCoin public tokenReward; // Объявялем переменную для токена
+    IntroToken public tokenReward; // Объявялем переменную для токена
 
     uint256 public etherUsdPrice = 871; // 1 ETH = 838 USD
     uint256 public minimalUSD = 12; // 12 usd minimal price
@@ -76,7 +76,7 @@ contract IntroCrowdsale is Ownable {
     uint256 public commission2 = 35;
 
     function IntroCrowdsale(address _tokenReward) {
-        tokenReward = IntroCoin(_tokenReward); // Присваивается адрес токен
+        tokenReward = IntroToken(_tokenReward); // Присваивается адрес токен
     }
 
     function () payable {
