@@ -133,7 +133,7 @@ contract StandardToken is ERC20, BasicToken {
 
 }
 
-contract BurnableToken is BasicToken {
+contract BurnableToken is StandardToken {
 
   event Burn(address indexed burner, uint256 value);
 
@@ -154,7 +154,7 @@ contract BurnableToken is BasicToken {
   }
 }
 
-contract IntroCoin is StandardToken {
+contract IntroToken is BurnableToken {
 
   string public name = "INTRO Token";
   string public symbol = "ITR";
@@ -162,7 +162,7 @@ contract IntroCoin is StandardToken {
   
   uint256 public constant INITIAL_SUPPLY = 200000000 * (10 ** uint256(decimals));
   
-  function IntroCoin() {
+  function IntroToken() {
     totalSupply = INITIAL_SUPPLY;
     balances[msg.sender] = INITIAL_SUPPLY;
   }
