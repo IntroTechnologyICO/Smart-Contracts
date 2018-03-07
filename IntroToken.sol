@@ -1,6 +1,5 @@
 pragma solidity ^0.4.16;
 
-
 /**
  * @title SafeMath
  * @dev Math operations with safety checks that throw on error
@@ -157,12 +156,11 @@ contract BurnableToken is BasicToken {
 
 contract IntroCoin is StandardToken {
 
-  string public name = "Intro Coin";
+  string public name = "INTRO Token";
   string public symbol = "ITR";
   uint8 public decimals = 18;
   
-  // Выпускаем 100 000 000 монет
-  uint256 public constant INITIAL_SUPPLY = 100000000 * (10 ** uint256(decimals));
+  uint256 public constant INITIAL_SUPPLY = 200000000 * (10 ** uint256(decimals));
   
   function IntroCoin() {
     totalSupply = INITIAL_SUPPLY;
