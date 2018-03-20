@@ -58,39 +58,81 @@ contract Ownable {
 
 }
 
+/**
+ * @title Pausable
+ * @dev Base contract which allows children to implement an emergency stop mechanism.
+ */
+contract Pausable is Ownable {
+  event Pause();
+  event Unpause();
+
+  bool public paused = false;
 
 
+  /**
+   * @dev Modifier to make a function callable only when the contract is not paused.
+   */
+  modifier whenNotPaused() {
+    require(!paused);
+    _;
+  }
 
-contract IntroCrowdsale is Ownable {
+  /**
+   * @dev Modifier to make a function callable only when the contract is paused.
+   */
+  modifier whenPaused() {
+    require(paused);
+    _;
+  }
+
+  /**
+   * @dev called by the owner to pause, triggers stopped state
+   */
+  function pause() onlyOwner whenNotPaused public {
+    paused = true;
+    Pause();
+  }
+
+  /**
+   * @dev called by the owner to unpause, returns to normal state
+   */
+  function unpause() onlyOwner whenPaused public {
+    paused = false;
+    Unpause();
+  }
+}
+
+
+contract IntroCrowdsale is Pausable {
     using SafeMath for uint256;
 
-    address public investWallet1 = 0x8503AAb7e9178174847302d6D06af5fbfEfcf444; //Кошелек для хранения присланных эфиров
-    address public investWallet2 = 0x8503AAb7e9178174847302d6D06af5fbfEfcf444; //Кошелек для хранения присланных эфиров
-    address public investWallet3 = 0x8503AAb7e9178174847302d6D06af5fbfEfcf444; //Кошелек для хранения присланных эфиров
-    IntroToken public tokenReward; // Объявялем переменную для токена
+    address public investWallet1 = 0x39C4814ad52266b697Ff23F2A34A52178dF9FeB0;
+    address public investWallet2 = 0x3c542ed7b58a9578657a63619B03D262dDc90c70;
+    address public investWallet3 = 0xf511c17680617c569A12Eb0979Ac404867F52d87;
+    IntroToken public tokenReward;
 
-    uint256 public etherUsdPrice = 871; // 1 ETH = 838 USD
+    uint256 public etherUsdPrice = 544; // 1 ETH = 544 USD
     uint256 public minimalUSD = 12; // 12 usd minimal price
     uint256 public tokenPriceUsd = 28; // 0.28 usd = 1 token
     uint256 public commission1 = 35;
     uint256 public commission2 = 35;
 
     function IntroCrowdsale(address _tokenReward) {
-        tokenReward = IntroToken(_tokenReward); // Присваивается адрес токен
+        tokenReward = IntroToken(_tokenReward);
     }
 
     function () payable {
-        buy(msg.sender); // Вызываем функцию покупки токена
+        buy(msg.sender);
     }
 
     function buy(address buyer) payable {
         require(buyer != address(0));
         require(msg.value != 0);
-        require(msg.value >= minimalUSD.mul(10 ** 18).div(etherUsdPrice)); // Минимальный взнос = minimalUSD(12 usd)
+        require(msg.value >= minimalUSD.mul(10 ** 18).div(etherUsdPrice));
 
         uint amount = msg.value;
-        uint tokens = amount.div(tokenPriceUsd).mul(100).mul(etherUsdPrice); // Получаем число купленных токенов
-        tokenReward.transfer(buyer, tokens); // Рассчитываем стоимость и отправляем токены с помощью вызова метода токена
+        uint tokens = amount.div(tokenPriceUsd).mul(100).mul(etherUsdPrice);
+        tokenReward.transfer(buyer, tokens);
 
         investWallet1.transfer(amount.div(100).mul(commission1));
         investWallet2.transfer(amount.div(100).mul(commission2));
@@ -98,11 +140,11 @@ contract IntroCrowdsale is Ownable {
     }
 
     function updatePrice(uint256 _etherUsdPrice) onlyOwner {
-        etherUsdPrice = _etherUsdPrice; // Вставляем актуальную цену ETH к USD (Например, 1300)
+        etherUsdPrice = _etherUsdPrice;
     }
 
     function updateMinimal(uint256 _minimalUSD) onlyOwner {
-        minimalUSD = _minimalUSD; // Вставляем актуальную минимальную цену USD (Например, 5)
+        minimalUSD = _minimalUSD;
     }
 
     function transferTokens(uint256 _tokens) onlyOwner {
